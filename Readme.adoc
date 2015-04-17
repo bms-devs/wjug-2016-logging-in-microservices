@@ -23,7 +23,7 @@ $ docker-compose stop # to kill them all
 ## Shipping the logs
 
 The logstash configuration expect syslog frame with logstash json content on port 5514.
-You can use the logback logstash encoder for that purpose. 
+You can use the logback https://github.com/logstash/logstash-logback-encoder[logstash encoder] for that purpose. 
 
 .logstash.conf
 [source,ruby]
