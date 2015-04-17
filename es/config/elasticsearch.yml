@@ -1,0 +1,3 @@
+cluster.name: elk
+node.name: es-elk-00
+bootstrap.mlockall: true

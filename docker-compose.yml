@@ -1,0 +1,22 @@
+es:
+  build: ./es
+  volumes:
+    - ./es/config:/usr/share/elasticsearch/config
+  ports:
+    - "9200:9200"
+    - "9300:9300"
+stash:
+  build: ./logstash
+  command: logstash -f /config-dir/logstash.conf
+  links:
+   - es:es
+  ports:
+    - "5514:5514"
+kibana:
+  image: marcbachmann/kibana4
+  links:
+   - es:elasticsearch
+  ports:
+    - "8005:5601"
+  environment:
+   - VERIFY_SSL=false

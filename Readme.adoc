@@ -1,0 +1,72 @@
+# ELK
+
+:experimental:
+
+Playing with https://docs.docker.com/compose/[docker-compose] in order to setup the famous ELK (https://www.elastic.co/products/elasticsearch[Elasticsearch], https://www.elastic.co/products/logstash[Logstash], https://www.elastic.co/products/kibana[Kibana]) suite.
+
+Docker-compose is the perviously well know tool called Fig, that is now integrated into Docker
+To launch the stack, clone the repo and hint the following command : 
+
+[source,bash]
+----
+$ docker-compose up
+----
+Hint kbd:[Ctrl+C] to stop the stack
+
+Or use the -d switch to have the stack in background
+[source,bash]
+----
+$ docker-compose up -d
+$ docker-compose stop # to kill them all
+----
+
+## Shipping the logs
+
+The logstash configuration expect syslog frame with logstash json content on port 5514.
+You can use the logback logstash encoder for that purpose. 
+
+.logstash.conf
+[source,ruby]
+----
+input {
+  syslog {
+    port => 5514
+    codec => "json"
+  }
+}
+output {
+  elasticsearch {
+    host => es
+    port => 9300
+    cluster => "elk"
+    protocol => "transport"
+  }
+}
+----
+
+
+.sample logback.xml
+[source,xml]
+----
+...
+<appender name="SYSLOG" class="net.logstash.logback.appender.LogstashSocketAppender">
+    <host>elk</host>
+    <port>5514</port>        
+</appender>
+...
+<root level="INFO">
+    <appender-ref ref="SYSLOG" />
+</root>
+...
+----
+
+## GUIs
+
+The kibana app, a damn great log analysis tools. 
+
+* Kibana: http://localhost:8005/ +
+  
+Two plugin for ES basic monitoring :
+
+* HQ: http://localhost:9200/_plugin/HQ/
+* Whatson: http://localhost:9200/_plugin/whatson/
