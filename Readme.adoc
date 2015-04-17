@@ -4,8 +4,8 @@
 
 Playing with https://docs.docker.com/compose/[docker-compose] in order to setup the famous ELK (https://www.elastic.co/products/elasticsearch[Elasticsearch], https://www.elastic.co/products/logstash[Logstash], https://www.elastic.co/products/kibana[Kibana]) suite.
 
-Docker-compose is the perviously well know tool called Fig, that is now integrated into Docker
-To launch the stack, clone the repo and hint the following command : 
+Docker-compose is the perviously well know tool called Fig, that is now integrated into Docker +
+To launch the stack, clone the repo and issue the following command : 
 
 [source,bash]
 ----
@@ -22,7 +22,7 @@ $ docker-compose stop # to kill them all
 
 ## Shipping the logs
 
-The logstash configuration expect syslog frame with logstash json content on port 5514.
+The logstash configuration expect syslog frame with logstash json content on port 5514. +
 You can use the logback https://github.com/logstash/logstash-logback-encoder[logstash encoder] for that purpose. 
 
 .logstash.conf
