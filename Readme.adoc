@@ -1,14 +1,17 @@
-# ELK
+= ELK
 
 :experimental:
 
 Playing with https://docs.docker.com/compose/[docker-compose] in order to setup the famous ELK (https://www.elastic.co/products/elasticsearch[Elasticsearch], https://www.elastic.co/products/logstash[Logstash], https://www.elastic.co/products/kibana[Kibana]) suite.
 
 Docker-compose is the perviously well know tool called Fig, that is now integrated into Docker +
-To launch the stack, clone the repo and issue the following command : 
+To launch the stack, clone the repo and issue the following commands :
 
 [source,bash]
 ----
+# build the sample app and its docker image
+$ mvn install -f logtest/pom.xml
+# Boot all the containers (ELK+App)
 $ docker-compose up
 ----
 Hint kbd:[Ctrl+C] to stop the stack
@@ -20,18 +23,18 @@ $ docker-compose up -d
 $ docker-compose stop # to kill them all
 ----
 
-## Shipping the logs
+== Shipping the logs
 
 The logstash configuration expect syslog frame with logstash json content on port 5514. +
-You can use the logback https://github.com/logstash/logstash-logback-encoder[logstash encoder] for that purpose. 
+You can use the logback https://github.com/logstash/logstash-logback-encoder[logstash encoder] for that purpose.
 
 .logstash.conf
 [source,ruby]
 ----
 input {
-  syslog {
+  tcp {
     port => 5514
-    codec => "json"
+    codec => "json_lines"
   }
 }
 output {
@@ -44,28 +47,45 @@ output {
 }
 ----
 
+== Sample application included
+
+There is a small java http://projects.spring.io/spring-boot/[spring-boot] app in the logtest folder. +
+You need to build the application before using docker-compose with a simple `mvn install`
+
+Here is the logback configuration for the "logtest" sample application:
 
 .sample logback.xml
 [source,xml]
 ----
 ...
-<appender name="SYSLOG" class="net.logstash.logback.appender.LogstashSocketAppender">
-    <host>elk</host>
-    <port>5514</port>        
+<appender name="stash"
+	class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+	<!-- stash is the name of the docker container hosting the logstash instance -->
+  <remoteHost>stash</remoteHost>
+	<port>5514</port>
+	<!-- encoder is required -->
+	<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
 </appender>
 ...
 <root level="INFO">
-    <appender-ref ref="SYSLOG" />
+	<appender-ref ref="stash" />
 </root>
 ...
 ----
 
-## GUIs
+Once you have the application up and running (after mvn install and docker-compose up), you can generate logs by performing simple GET request against the following endpoint:
+[source,bash]
+----
+# level can be on of : debug|ìnfo|warn|error
+curl http://localhost:8080/logger/{level}
+----
 
-The kibana app, a damn great log analysis tools. 
+== GUIs
+
+The kibana app, a damn great log analysis tools.
 
 * Kibana: http://localhost:8005/ +
-  
+
 Two plugin for ES basic monitoring :
 
 * HQ: http://localhost:9200/_plugin/HQ/

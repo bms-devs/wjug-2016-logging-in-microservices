@@ -7,5 +7,5 @@ ENV ES_HEAP_SIZE 1g
 EXPOSE 9200
 EXPOSE 9300
 
-RUN /usr/share/elasticsearch/bin/plugin --install royrusso/elasticsearch-HQ
-RUN /usr/share/elasticsearch/bin/plugin --install xyu/elasticsearch-whatson/0.1.3
+RUN /usr/share/elasticsearch/bin/plugin -DproxyPort=8080 -DproxyHost=proxy --install royrusso/elasticsearch-HQ
+RUN /usr/share/elasticsearch/bin/plugin -DproxyPort=8080 -DproxyHost=proxy --install xyu/elasticsearch-whatson/0.1.3
