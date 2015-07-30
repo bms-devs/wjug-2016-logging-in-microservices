@@ -4,6 +4,8 @@
 
 Playing with https://docs.docker.com/compose/[docker-compose] in order to setup the famous ELK (https://www.elastic.co/products/elasticsearch[Elasticsearch], https://www.elastic.co/products/logstash[Logstash], https://www.elastic.co/products/kibana[Kibana]) suite.
 
+== Build/Run the stack
+
 Docker-compose is the perviously well know tool called Fig, that is now integrated into Docker +
 To launch the stack, clone the repo and issue the following commands :
 
@@ -51,6 +53,8 @@ output {
 
 There is a small java http://projects.spring.io/spring-boot/[spring-boot] app in the logtest folder. +
 You need to build the application before using docker-compose with a simple `mvn install`
+
+The maven build will create the jar and the Docker image thanks to https://github.com/spotify/docker-maven-plugin[Spotify docker-maven-plugin]
 
 Here is the logback configuration for the "logtest" sample application:
 
