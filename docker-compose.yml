@@ -10,6 +10,8 @@ stash:
   command: logstash -f /config-dir/logstash.conf
   links:
    - es:es
+  volumes:
+    - ./logstash/logs:/logs-dir
   ports:
     - "5514:5514"
 kibana:
