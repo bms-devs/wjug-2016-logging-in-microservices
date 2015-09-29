@@ -6,6 +6,7 @@ import groovy.transform.Field
 
 def randomBoolean() { return random.nextBoolean() }
 def randomCorrelationId() { return UUID.randomUUID().toString() }
+def randomMethod(app) { (random.nextInt((app == "audit") ? 3 : 7) == 0) ? "POST" : "GET" }
 def randomStatus() { return (random.nextInt(8) == 0) ? 500 : 200 }
 def randomTime() { return random.nextInt(2000) / 1000f }
 
@@ -15,12 +16,12 @@ def randomNipNo() { return String.format("%03d-%02d-%02d-%03d", random.nextInt(1
 def sleepShort() { Thread.sleep(100 + random.nextInt(500)) }
 def sleepLong() { Thread.sleep(1000 + random.nextInt(500)) }
 
-def logEntry(app, method, url, correlationId) {
+def logEntry(app, url, correlationId) {
 	if (useJson) {
-		return "{\"app\": \"${app}\", \"method\": \"${method}\", \"url\": \"${url}\", \"status\": ${randomStatus()}, \"time\": " + String.format('%.3f', randomTime()) + ", \"correlationId\": \"${correlationId}\"}"
+		return "{\"app\": \"${app}\", \"method\": \"${randomMethod(app)}\", \"url\": \"${url}\", \"status\": ${randomStatus()}, \"time\": " + String.format('%.3f', randomTime()) + ", \"correlationId\": \"${correlationId}\"}"
 	}
 	else {
-		return "${method} ${url} (status:${randomStatus()} time:" + String.format('%.3f', randomTime()) + "s correlationId:${correlationId})"
+		return "${randomMethod(app)} ${url} (status:${randomStatus()} time:" + String.format('%.3f', randomTime()) + "s correlationId:${correlationId})"
 	}
 }
 
@@ -33,14 +34,14 @@ Integer.MAX_VALUE.times {
 	def correlationId = randomCorrelationId()
 
 	if (randomBoolean()) {
-		saveLogEntry("audit", logEntry("audit", "POST", "http://audit.service/trail", correlationId))
-		saveLogEntry("krs", logEntry("krs", "GET", "http://krs.service/krs/${randomKrsNo()}/pdf", correlationId))
+		saveLogEntry("audit", logEntry("audit", "http://audit.service/trail", correlationId))
+		saveLogEntry("krs", logEntry("krs", "http://krs.service/krs/${randomKrsNo()}/pdf", correlationId))
 	}
 	else {
-		saveLogEntry("audit", logEntry("audit", "POST", "http://audit.service/trail", correlationId))
-		saveLogEntry("audit", logEntry("audit", "POST", "http://audit.service/trail", correlationId))
-		saveLogEntry("audit", logEntry("audit", "POST", "http://audit.service/trail", correlationId))
-		saveLogEntry("ceidg", logEntry("ceidg", "GET", "http://ceidg.service/company/${randomNipNo()}", correlationId))
+		saveLogEntry("audit", logEntry("audit", "http://audit.service/trail", correlationId))
+		saveLogEntry("audit", logEntry("audit", "http://audit.service/trail", correlationId))
+		saveLogEntry("audit", logEntry("audit", "http://audit.service/trail", correlationId))
+		saveLogEntry("ceidg", logEntry("ceidg", "http://ceidg.service/company/${randomNipNo()}", correlationId))
 	}
 
 	sleepLong()
