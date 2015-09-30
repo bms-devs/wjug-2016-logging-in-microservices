@@ -14,6 +14,7 @@ stash:
     - ./logstash/logs:/logs-dir
   ports:
     - "5514:5514"
+    - "7777:7777"
 kibana:
   image: marcbachmann/kibana4
   links:
