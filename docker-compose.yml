@@ -1,7 +1,5 @@
 es:
-  build: ./es
-  volumes:
-    - ./es/config:/usr/share/elasticsearch/config
+  image: elasticsearch
   ports:
     - "9200:9200"
     - "9300:9300"
@@ -16,13 +14,13 @@ stash:
     - "5514:5514"
     - "7777:7777"
 kibana:
-  image: marcbachmann/kibana4
+  image: kibana
+  environment:
+    - ELASTICSEARCH_URL=http://es:9200
   links:
-   - es:elasticsearch
+    - es
   ports:
     - "8005:5601"
-  environment:
-   - VERIFY_SSL=false
 app:
   image: logtest/logtest
   links:
