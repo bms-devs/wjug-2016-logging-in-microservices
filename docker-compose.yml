@@ -21,9 +21,3 @@ kibana:
     - es
   ports:
     - "8005:5601"
-app:
-  image: logtest/logtest
-  links:
-   - stash:stash
-  ports:
-    - "8080:8080"
